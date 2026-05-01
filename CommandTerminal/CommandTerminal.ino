@@ -181,6 +181,9 @@ void loop() {
     }
 
     // ── 5. STATE_ACK auto-return to IDLE after ACK_STATE_TIMEOUT_MS ──────────
+    // The subtraction `millis() - ackStateEnterMs` relies on unsigned 32-bit
+    // wraparound arithmetic, which correctly handles the ~49.7-day millis()
+    // rollover without any additional guards.
     if (curState == STATE_ACK) {
         if (millis() - ackStateEnterMs >= ACK_STATE_TIMEOUT_MS) {
             cmdMgr.clearAck();
@@ -242,7 +245,7 @@ static void onStateChanged(TerminalState newState) {
 
         case STATE_ACK:
             ackStateEnterMs = millis();
-            displayAckFlash("CMD TERMINAL");
+            displayAckBanner();   // non-blocking; status is restored after ACK_STATE_TIMEOUT_MS
             scheduleBuzz(BEEP_FREQ / 2, BEEP_SHORT, 1);
             break;
     }

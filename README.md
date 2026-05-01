@@ -92,7 +92,7 @@ CommandTerminal/
 | Buzzer | D2 |
 | Acknowledge button (active LOW, pull-up) | A4 (D18) *(see note)* |
 
-> **Note:** `LED_IDLE` (A4) and `ACK_BTN_PIN` (D18 / A4) share the same physical pin on Arduino Uno.  
+> **Note:** `LED_IDLE` (A4) and `ACK_BTN_PIN` (A4, digital 18) share the same physical pin on Arduino Uno.  
 > You must choose **one of two options**:  
 > - **(a) LED only (default):** the idle LED lights on A4; no physical button is needed — use keypad `B` or serial acknowledgement instead.  
 > - **(b) Button only:** connect the button to a different free digital pin, update `ACK_BTN_PIN` in `Config.h` to that pin number, and reassign or remove `LED_IDLE`.

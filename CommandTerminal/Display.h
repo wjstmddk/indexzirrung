@@ -21,7 +21,7 @@ static LiquidCrystal lcd(LCD_RS, LCD_EN, LCD_D4, LCD_D5, LCD_D6, LCD_D7);
 
 // ─── Custom characters ────────────────────────────────────────────────────────
 // Bell icon (5×8) — shown when a new command arrives
-static const uint8_t CHAR_BELL[8] = {
+static uint8_t CHAR_BELL[8] = {
     0b00100,
     0b01110,
     0b01110,
@@ -33,7 +33,7 @@ static const uint8_t CHAR_BELL[8] = {
 };
 
 // Checkmark icon — shown after acknowledgement
-static const uint8_t CHAR_CHECK[8] = {
+static uint8_t CHAR_CHECK[8] = {
     0b00000,
     0b00001,
     0b00011,
@@ -49,8 +49,8 @@ static const uint8_t CHAR_CHECK[8] = {
  */
 inline void displayInit() {
     lcd.begin(LCD_COLS, LCD_ROWS);
-    lcd.createChar(0, const_cast<uint8_t*>(CHAR_BELL));
-    lcd.createChar(1, const_cast<uint8_t*>(CHAR_CHECK));
+    lcd.createChar(0, CHAR_BELL);
+    lcd.createChar(1, CHAR_CHECK);
     lcd.clear();
 }
 
@@ -62,7 +62,7 @@ inline void displaySplash() {
     lcd.setCursor(2, 0);
     lcd.print(F("CMD TERMINAL"));
     lcd.setCursor(3, 1);
-    lcd.print(F("Jillyeong v1"));
+    lcd.print(F("Jilyeong v1"));
 }
 
 /**
@@ -104,15 +104,16 @@ inline void displayClear() {
 }
 
 /**
- * @brief Show a brief "ACK" confirmation on row 0, then restore status.
- * @param restoreStatus  String to restore on row 0 after the flash.
+ * @brief Show acknowledgement text on row 0 (non-blocking).
+ *
+ * Displays the confirmation banner immediately.  The caller is responsible
+ * for restoring the normal status text after the desired display interval
+ * (e.g., via the ACK_STATE_TIMEOUT_MS loop in CommandTerminal.ino).
  */
-inline void displayAckFlash(const char* restoreStatus) {
+inline void displayAckBanner() {
     lcd.setCursor(0, 0);
     lcd.write(byte(1));           // checkmark glyph
     lcd.print(F(" ACKNOWLEDGED  "));
-    delay(1000);
-    displayStatus(restoreStatus);
 }
 
 /**
